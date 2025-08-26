@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 import { Hono } from "hono";
 import { env } from "@/utils/env";
 import { auth } from "./utils/auth";
+import profileRouter from "./profile";
 
 const app = new Hono();
 
@@ -30,4 +31,5 @@ routes.forEach((route) => {
 
 app.on(["POST", "GET"], "/api/auth/**", (c) =>  auth.handler(c.req.raw));
 
+app.route("/api/profile", profileRouter);
 export default app;

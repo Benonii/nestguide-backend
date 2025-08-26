@@ -11,3 +11,10 @@ export const createProfileSchema = z.object({
 });
 
 export type CreateProfileSchema = z.infer<typeof createProfileSchema>;
+
+
+export const getProfileSchema = z.object({ 
+    userID: z.string(),
+});
+
+export type GetProfileSchema = z.infer<typeof getProfileSchema>;

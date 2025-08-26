@@ -1,11 +1,11 @@
 import { pgTable, text } from "drizzle-orm/pg-core";
-import { cuid, timestamps, deleteAt } from "@/utils";
+import { cuid, timestamps, deletedAt } from "@/utils";
 import { user } from "@/db/schema";
 
 export const profileTable = pgTable("profiles", {
     userID: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
     ...timestamps,
-    ...deleteAt,
+    ...deletedAt,
     phone: text("phone"),
     address: text("address"),
     city: text("city"),
