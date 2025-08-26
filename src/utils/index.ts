@@ -14,4 +14,4 @@ export const timestamps = {
 };
 
 
-export const deleteAt = {deleteAt:timestamp("deleted_at", { withTimezone: true, mode: "date" })};
+export const deletedAt = {deletedAt:timestamp("deleted_at", { withTimezone: true, mode: "date" })};
