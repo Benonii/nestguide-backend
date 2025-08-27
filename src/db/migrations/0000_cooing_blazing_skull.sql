@@ -30,29 +30,11 @@ CREATE TABLE "user" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL,
-	"user_type" text NOT NULL,
 	"email_verified" boolean NOT NULL,
 	"image" text,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL,
-	"username" text,
-	"display_username" text,
-	CONSTRAINT "user_email_unique" UNIQUE("email"),
-	CONSTRAINT "user_username_unique" UNIQUE("username")
-);
---> statement-breakpoint
-CREATE TABLE "user_profile" (
-	"id" text PRIMARY KEY NOT NULL,
-	"user_id" text NOT NULL,
-	"first_name" text NOT NULL,
-	"last_name" text NOT NULL,
-	"phone" text NOT NULL,
-	"address" text NOT NULL,
-	"state" text NOT NULL,
-	"city" text NOT NULL,
-	"zip_code" text,
-	"created_at" timestamp NOT NULL,
-	"updated_at" timestamp NOT NULL
+	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 CREATE TABLE "verification" (
@@ -79,5 +61,4 @@ CREATE TABLE "profiles" (
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "user_profile" ADD CONSTRAINT "user_profile_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;

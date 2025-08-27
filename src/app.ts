@@ -7,6 +7,7 @@ import { Hono } from "hono";
 import { env } from "@/utils/env";
 import { auth } from "./utils/auth";
 import profileRouter from "./profile";
+import { leadsRouter } from "./leads";
 
 const app = new Hono();
 
@@ -32,4 +33,5 @@ routes.forEach((route) => {
 app.on(["POST", "GET"], "/api/auth/**", (c) =>  auth.handler(c.req.raw));
 
 app.route("/api/profile", profileRouter);
+app.route("/api/lead", leadsRouter);
 export default app;
