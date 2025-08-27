@@ -1,5 +1,5 @@
 import { pgTable, text } from "drizzle-orm/pg-core";
-import { cuid, timestamps, deletedAt } from "@/utils";
+import { timestamps, deletedAt } from "@/utils";
 import { user } from "@/db/schema";
 
 export const profileTable = pgTable("profiles", {
