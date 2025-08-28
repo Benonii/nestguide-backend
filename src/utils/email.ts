@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { VerifyEmail } from "./emailTemplates/verifyEmail";
 
-const resend = new Resend("REMOVED");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 
 export async function sendVerificationEmail(name: string, email: string, url: string, token: string) {
