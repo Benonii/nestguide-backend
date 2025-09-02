@@ -1,7 +1,8 @@
 import { Hono } from "hono";
-import { createLead, deleteLead, getLead, getLeads } from "./functions";
+import { checkIfLeadExists, createLead, deleteLead, getLead, getLeads } from "./functions";
 import { createLeadSchema, deleteLeadSchema, getLeadsSchema } from "./validation";
 import { fromZodError } from "zod-validation-error";
+import { leadsTable } from "./leadsTable.sql";
 
 export const leadsRouter = new Hono();
 
@@ -10,6 +11,14 @@ leadsRouter.post("/", async (c) => {
 
     if (!result.success) {
         return c.json({ error: fromZodError(result.error).message }, 400);
+    }
+
+    const { email, phone } = result.data;
+
+    const existingLead = await checkIfLeadExists(email, phone);
+
+    if (existingLead) {
+        return c.json({ message: "We already have your information!" }, 400);
     }
 
     const lead = await createLead(result.data);

@@ -57,6 +57,19 @@ export const getLead = async (id: string) => {
     return lead[0];
 };
 
+export const checkIfLeadExists = async (email: string, phone: string) => {
+    const lead = await db.select().from(leadsTable)
+        .where(or(
+            eq(leadsTable.email, email),
+            eq(leadsTable.phone, phone),
+        ))
+        .limit(1);
+
+    return lead.length > 0;
+};
+
+
+
 export const deleteLead = async (id: string) => {
     await db.update(leadsTable).set({
         deletedAt: new Date(),
