@@ -9,6 +9,7 @@ import { auth } from "./utils/auth";
 import profileRouter from "./profile";
 import { leadsRouter } from "./leads";
 
+
 const app = new Hono();
 
 app.use("*", cors({
