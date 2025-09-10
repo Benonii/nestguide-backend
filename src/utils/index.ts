@@ -62,3 +62,30 @@ export const geocodeAddress = async (params: GeocodeParams): Promise<Coordinates
   }
 }
 
+export type ZipCodeResponse = {
+	"country": string,
+	"country abbreviation": string,
+	"post code": string,
+	"places": [
+		{
+			"place name": string,
+			"longitude": string,
+			"latitude": string,
+			"state": string,
+			"state abbreviation": string
+		}
+	]
+}
+
+
+export const getCentroidFromZipCode = async (zipCode: string): Promise<Coordinates | null> => {
+  // Use the zip code to get the centroid
+  const response = await fetch(`http://api.zippopotam.us/us/${zipCode}`);
+  const data = await response.json() as ZipCodeResponse;
+  
+  return {
+    lon: Number(data?.places[0]?.longitude),
+    lat: Number(data?.places[0]?.latitude)
+  }
+}
+
