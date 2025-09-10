@@ -19,6 +19,7 @@ export type GeocodeParams = {
 export type Coordinates = {
   lat: number
   lon: number
+  state: string
 }
   
 export type CensusGeocodeResponse = {

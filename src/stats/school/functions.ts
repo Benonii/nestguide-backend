@@ -1,9 +1,10 @@
-import { type SchoolDistrictResult } from "./validation";
+import { type SchoolDistrictResult, type SchoolStats } from "./validation";
 import type { Coordinates } from "@/geocoding/validation";
 import { point } from '@turf/helpers';
 import { booleanPointInPolygon } from '@turf/boolean-point-in-polygon';
 import fs from 'fs';
 import path from 'path';
+import { env } from "@/utils/env";
 
 // Cache for school district boundaries to avoid loading the large file repeatedly
 let schoolDistrictsCache: any = null;
@@ -100,6 +101,52 @@ export const getDistrict = async (coordinates: Coordinates): Promise<SchoolDistr
   }
 };
 
-export const getSchoolStats = async (districtID: string) => {
-  //  const schoolStats    
+export const getSchoolStats = async (districtID: string, state: string) => {
+  const url = `https://api.schooldigger.com/v2.3/schools?districtID=${districtID}&appID=${env.SCHOOLDIGGER_APP_ID}&appKey=${env.SCHOOLDIGGER_APP_KEY}&st=${state}`;
+  console.log("url", url);
+  const response = await fetch(url, {
+  });
+
+  if (!response.ok) {
+    const error: any = await response.json();
+    throw new Error( error?.message || `Failed to fetch school stats: ${response.statusText}`);
+  }
+
+  const schoolStats: any = await response.json();
+
+  return {
+    numberOfSchools: schoolStats.numberOfSchools,
+    numberOfPages: schoolStats.numberOfPages,
+    schoolList: schoolStats.schoolList.map((school: any) => ({
+      id: school.schoolid,
+      name: school.schoolName,
+      phone: school.phone,
+      url: school.url,
+      urlCompare: school.urlCompare,
+      address: school.address,
+      lowGrade: school.lowGrade,
+      highGrade: school.highGrade,
+      schoolLevel: school.schoolLevel,
+      isCharterSchool: school.isCharterSchool,
+      isMagnetSchool: school.isMagnetSchool,
+      isVirtualSchool: school.isVirtualSchool,
+      isTitleISchool: school.isTitleISchool,
+      isPrivate: school.isPrivate,
+      privateDays: school.privateDays,
+      privateHours: school.privateHours,
+      privateCoed: school.privateCoed,
+      privateHasLibrary: school.privateHasLibrary,
+      privateOrientation: school.privateOrientation,
+      ncesPrivateSchoolID: school.ncesPrivateSchoolID,
+      isTitleISchoolwideSchool: school.isTitleISchoolwideSchool,
+      district:{
+        districtID: school.district.districtID,
+        districtName: school.district.districtName,
+        url: school.district.url,
+        rankURL: school.district.rankURL,
+      },
+      rank: school.rankHistory[0],
+      schoolYearlyDetails: school.schoolYearlyDetails
+    }))
+  };
 }

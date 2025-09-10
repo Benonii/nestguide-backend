@@ -34,7 +34,17 @@ schoolRouter.post('/', async (c) => {
         return c.json({ message: "District not found" }, 404);
     }
 
-    const schoolStats = await getSchoolStats(districtInfo.data.id);
+    try {   
+        const schoolStats = await getSchoolStats(districtInfo.data.id, coordinates.state);
+
+        return c.json({
+            data: schoolStats,
+            message: "School stats fetched successfully!"
+        });
+    } catch (error: any) {
+        console.error("Error fetching school stats:", error);
+        return c.json({ message: error.message || "Failed to fetch school stats" }, 500);
+    }
 });
 
 export default schoolRouter;

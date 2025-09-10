@@ -50,7 +50,8 @@ export const geocodeAddress = async (params: GeocodeParams): Promise<Coordinates
       const coordinates = match?.coordinates
       return {
         lat: coordinates?.y ?? 0,
-        lon: coordinates?.x ?? 0
+        lon: coordinates?.x ?? 0,
+        state
       }
     } else {
       console.log("No match found for this address.")
@@ -85,7 +86,8 @@ export const getCentroidFromZipCode = async (zipCode: string): Promise<Coordinat
   
   return {
     lon: Number(data?.places[0]?.longitude),
-    lat: Number(data?.places[0]?.latitude)
+    lat: Number(data?.places[0]?.latitude),
+    state: data?.places[0]?.["state abbreviation"],
   }
 }
 
