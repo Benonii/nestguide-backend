@@ -103,7 +103,6 @@ export const getDistrict = async (coordinates: Coordinates): Promise<SchoolDistr
 
 export const getSchoolStats = async (districtID: string, state: string) => {
   const url = `https://api.schooldigger.com/v2.3/schools?districtID=${districtID}&appID=${env.SCHOOLDIGGER_APP_ID}&appKey=${env.SCHOOLDIGGER_APP_KEY}&st=${state}`;
-  console.log("url", url);
   const response = await fetch(url, {
   });
 

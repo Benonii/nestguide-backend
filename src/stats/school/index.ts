@@ -15,26 +15,26 @@ schoolRouter.post('/', async (c) => {
 
     const { street, city, state, zipCode } = result.data;
     
-    let coordinates: Coordinates | null = null;
-    if (street && city && state) {
-        coordinates = await geocodeAddress({ street, city, state, zipCode });
-        if (!coordinates) {
-            return c.json({ message: "Invalid address" }, 400);
+    try { 
+        let coordinates: Coordinates | null = null;
+        if (street && city && state) {
+            coordinates = await geocodeAddress({ street, city, state, zipCode });
+            if (!coordinates) {
+                return c.json({ message: "Invalid address" }, 400);
+            }
+        } else {
+            coordinates = await getCentroidFromZipCode(zipCode);
+            if (!coordinates) {
+                return c.json({ message: "Invalid zip code" }, 400);
+            }
         }
-    } else {
-        coordinates = await getCentroidFromZipCode(zipCode);
-        if (!coordinates) {
-            return c.json({ message: "Invalid zip code" }, 400);
-        }
-    }
 
-    const districtInfo: SchoolDistrictResult = await getDistrict(coordinates);
+        const districtInfo: SchoolDistrictResult = await getDistrict(coordinates);
     
-    if (!districtInfo.data.found) {
-        return c.json({ message: "District not found" }, 404);
-    }
-
-    try {   
+        if (!districtInfo.data.found) {
+            return c.json({ message: "District not found" }, 404);
+        }
+  
         const schoolStats = await getSchoolStats(districtInfo.data.id, coordinates.state);
 
         return c.json({
@@ -43,7 +43,7 @@ schoolRouter.post('/', async (c) => {
         });
     } catch (error: any) {
         console.error("Error fetching school stats:", error);
-        return c.json({ message: error.message || "Failed to fetch school stats" }, 500);
+        return c.json({ message: "Failed to fetch school stats" }, 500);
     }
 });
 
