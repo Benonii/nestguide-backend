@@ -17,6 +17,11 @@ export const getSchoolStatsSchema = z.object({
     zipCode: z.string().max(5),
 });
 
+export const getSchoolStatsQueryParametersSchema = z.object({
+    page: z.coerce.number().min(1).default(1),
+    perPage: z.coerce.number().min(1).max(100).default(10),
+});
+
 export type GetSchoolStatsSchema = z.infer<typeof getSchoolStatsSchema>;
 
 export interface SchoolDistrictResult {

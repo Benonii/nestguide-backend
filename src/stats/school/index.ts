@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { fromZodError } from "zod-validation-error";
-import { getSchoolStatsSchema, type SchoolDistrictResult } from "./validation";
+import { getSchoolStatsQueryParametersSchema, getSchoolStatsSchema, type SchoolDistrictResult } from "./validation";
 import { getDistrict, getSchoolStats } from "./functions";
 import { geocodeAddress, getCentroidFromZipCode } from "@/utils";
 import type { Coordinates } from "@/geocoding/validation";
@@ -13,8 +13,14 @@ schoolRouter.post('/', async (c) => {
         return c.json({ error: fromZodError(result.error).message }, 400);
     }
 
+    const paramResult = getSchoolStatsQueryParametersSchema.safeParse(c.req.query());
+    if (!paramResult.success) {
+        return c.json({ error: fromZodError(paramResult.error).message }, 400);
+    }
+
     const { street, city, state, zipCode } = result.data;
-    
+    const { page, perPage } = paramResult.data;
+
     try { 
         let coordinates: Coordinates | null = null;
         if (street && city && state) {
@@ -35,7 +41,9 @@ schoolRouter.post('/', async (c) => {
             return c.json({ message: "District not found" }, 404);
         }
   
-        const schoolStats = await getSchoolStats(districtInfo.data.id, coordinates.state);
+        const schoolStats = await getSchoolStats(districtInfo.data.id, coordinates.state, page, perPage);
+
+
 
         return c.json({
             data: schoolStats,

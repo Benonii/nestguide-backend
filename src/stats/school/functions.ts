@@ -4,9 +4,7 @@ import { point } from '@turf/helpers';
 import { booleanPointInPolygon } from '@turf/boolean-point-in-polygon';
 import fs from 'fs';
 import path from 'path';
-import { env } from "@/utils/env";
 
-// Cache for school district boundaries to avoid loading the large file repeatedly
 let schoolDistrictsCache: any = null;
 
 /**
@@ -101,9 +99,8 @@ export const getDistrict = async (coordinates: Coordinates): Promise<SchoolDistr
   }
 };
 
-export const getSchoolStats = async (districtID: string, state: string) => {
-  const url = `https://api.schooldigger.com/v2.3/schools?districtID=${districtID}&appID=${env.SCHOOLDIGGER_APP_ID}&appKey=${env.SCHOOLDIGGER_APP_KEY}&st=${state}`;
-  const response = await fetch(url, {
+export const getSchoolStats = async (districtID: string, state: string, page: number, perPage: number) => {
+  const response = await fetch(`https://api.schooldigger.com/v2.3/schools?districtID=${districtID}&appID=${process.env.SCHOOLDIGGER_APP_ID}&appKey=${process.env.SCHOOLDIGGER_APP_KEY}&st=${state}&page=${page}&perPage=${perPage}`, {
   });
 
   if (!response.ok) {
@@ -144,7 +141,7 @@ export const getSchoolStats = async (districtID: string, state: string) => {
         url: school.district.url,
         rankURL: school.district.rankURL,
       },
-      rank: school.rankHistory[0],
+      rank: school.rankHistory?.[0],
       schoolYearlyDetails: school.schoolYearlyDetails
     }))
   };
